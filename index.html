@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #weather { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Weather Checker</h1>
+    <input type="text" id="city" placeholder="Enter city name">
+    <button id="getWeather">Get Weather</button>
+    <div id="weather"></div>
+
+    <script>
+        document.getElementById('getWeather').addEventListener('click', function() {
+            var city = document.getElementById('city').value;
+            if (city) {
+                getWeather(city);
+            } else {
+                document.getElementById('weather').textContent = "Please enter a city name.";
+            }
+        });
+
+        function getWeather(city) {
+            const apiKey = 'd14a944671284d4abdf124056242907'
+            const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+
+            fetch(weatherUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const weather = data.current.condition.text;
+                    const temp = data.current.temp_c;
+                    document.getElementById('weather').innerHTML = `Weather: ${weather}, Temperature: ${temp}°C`;
+                })
+                .catch(error => {
+                    document.getElementById('weather').textContent = "Unable to fetch weather data.";
+                    console.error('Error fetching data:', error);
+                });
+        }
+    </script>
+</body>
+</html>
